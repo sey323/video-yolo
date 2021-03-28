@@ -2,7 +2,7 @@ from absl import app
 from absl import flags
 
 import src.scene_dct as scene_dct
-import src.module as module
+import src.service as service
 
 from models.YOLO_small.YOLO_small_tf import YOLO_TF as detector
 
@@ -16,7 +16,7 @@ def main(argv):
     cut_dct = scene_dct.MAE_block
 
     # 処理の実行
-    module.cut_and_detect(
+    service.cut_and_detect(
         FLAGS.movie_path, cut_dct, detect_ai, FLAGS.save_path, FLAGS.thres
     )
 

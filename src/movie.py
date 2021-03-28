@@ -72,7 +72,8 @@ class MovieIter(object):
         """
         return self.org.get(cv2.CAP_PROP_FPS)
 
-    def youtube_downloader(self, url: str, save_path: str):
+    @staticmethod
+    def youtube_downloader(url: str, save_path: str):
         """YouTubeからダウンロードする
 
         Args:

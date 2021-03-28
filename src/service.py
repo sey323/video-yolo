@@ -5,6 +5,20 @@ from src.movie import MovieIter
 from src.dump import Dumper
 
 
+def download_youtube(
+    movie_path, save_path,
+):
+    """
+    Youtubeから動画をダウンロードする
+    """
+    # 保存するディレクトリが存在するか確認する．
+    save_folders = "results/" + save_path
+    if not os.path.exists(os.path.join(save_folders)):
+        os.makedirs(os.path.join(save_folders))
+
+    yt_title = MovieIter.youtube_downloader(movie_path, save_path)
+
+
 def cut_and_detect(
     movie_path, cut_dct, detect_ai, save_path, thres, img_size=[240, 135]
 ):
