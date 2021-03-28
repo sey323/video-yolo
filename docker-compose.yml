@@ -6,5 +6,5 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./resources:/home/video-yolo/resources
-      - ./results:/home/video-yolo/results
+      - ${SAVE_PATH}/resources:/home/video-yolo/resources
+      - ${SAVE_PATH}/results:/home/video-yolo/results
