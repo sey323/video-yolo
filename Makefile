@@ -1,12 +1,8 @@
 API_SERVER_NAME=video-yolo
 
-devrun:
+run:
 	docker-compose build
 	docker-compose --env-file .env.dev up -d
-
-prdrun:
-	docker-compose build
-	docker-compose --env-file .env.prd up -d
 
 stop:
 	docker stop ${API_SERVER_NAME} 
