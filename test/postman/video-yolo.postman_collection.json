@@ -1,0 +1,122 @@
+{
+	"info": {
+		"_postman_id": "f4742ef3-e218-4ba4-9631-f67ee6063333",
+		"name": "video-yolo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "analytics_video",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"url\": \"http://youtube.com/watch?v=2lAe1cqCOXo\",\n    \"scenedct\": \"numeric\",\n    \"numeric_thres\": 50,\n    \"save_path\": \"sample\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/analysis",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"analysis"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "download_video",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/download/video?url=http://youtube.com/watch?v=2lAe1cqCOXo&save_path=sample",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"download",
+						"video"
+					],
+					"query": [
+						{
+							"key": "url",
+							"value": "http://youtube.com/watch?v=2lAe1cqCOXo",
+							"description": "ダウンロードする動画のURL"
+						},
+						{
+							"key": "save_path",
+							"value": "sample",
+							"description": "保存する動画のパス(任意)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "download_audio",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/download/audio?url=https://www.youtube.com/watch?v=9bZkp7q19f0&save_path=sample",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"download",
+						"audio"
+					],
+					"query": [
+						{
+							"key": "url",
+							"value": "https://www.youtube.com/watch?v=9bZkp7q19f0",
+							"description": "ダウンロードする動画のURL"
+						},
+						{
+							"key": "save_path",
+							"value": "sample",
+							"description": "保存する動画のパス(任意)"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
