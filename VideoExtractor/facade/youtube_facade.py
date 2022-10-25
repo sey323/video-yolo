@@ -1,9 +1,9 @@
 import logging
 import os
-from glob import glob
 
 import cv2
-from pytube import YouTube
+import yt_dlp
+from VideoExtractor.util import FileUtil
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ class YoutubeFacade(object):
         else:  # MP4がないときはYoutubeからダウンロード
             logger.info("Download video from Youtube.")
             self.download_video(video_file, save_root_path)
-            download_url = self.get_latest_modified_file_path(os.path.join(save_root_path))
+            download_url = FileUtil.get_latest_modified_file_path(os.path.join(save_root_path))
             self.org = cv2.VideoCapture(download_url)
 
         self.frame_count = 0
@@ -91,12 +91,18 @@ class YoutubeFacade(object):
             url (str): 読み込む動画のURL
             save_path (str): ダウンロードした動画を保存するパス
         """
-        yt = YouTube(url)
-        try:
-            yt.streams.get_by_itag(137).download(save_path)
-        except AttributeError:
-            yt.streams.get_highest_resolution().download(save_path)
-        return yt.title
+        ydl_opts = {
+            'format': 'best',
+            "outtmpl": f"{save_path}/%(title)s.%(ext)s",
+            # "cookies-from-browser": "Vivaldi",
+        }
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            result = ydl.download(
+                url, 
+            )
+            save_full_path = FileUtil.get_latest_modified_file_path(save_path)
+
+        return os.path.basename(save_full_path)
 
     @staticmethod
     def download_audio(url: str, save_path: str):
@@ -106,27 +112,21 @@ class YoutubeFacade(object):
             url (str): 読み込む動画のURL
             save_path (str): ダウンロードした動画を保存するパス
         """
-        yt = YouTube(url)
-        out_file = yt.streams.get_by_itag(140).download(save_path)
+        ydl_opts = {
+            "outtmpl": f"{save_path}/%(title)s.%(ext)s",
+            'format': 'bestaudio/best',
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '192',
+            }],
+        }
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            result = ydl.download(
+                url, 
+            )
+            save_full_path = FileUtil.get_latest_modified_file_path(save_path)
 
-        # ファイル名をmp3に変更
-        base, _ = os.path.splitext(out_file)
-        new_file = base + ".mp3"
-        os.rename(out_file, new_file)
+        return os.path.basename(save_full_path)
 
-        return yt.title
 
-    @staticmethod
-    def get_latest_modified_file_path(dirname: str) -> str:
-        """ディレクトリ内で最新に更新されたファイルを得る．
-
-        Args:
-            dirname (str): 検索対象のディレクトリ
-
-        Returns:
-            str: 検索結果のファイルのフルパス
-        """
-        target = os.path.join(dirname, "*")
-        files = [(f, os.path.getmtime(f)) for f in glob(target)]
-        latest_modified_file_path = sorted(files, key=lambda files: files[1])[-1]
-        return latest_modified_file_path[0]

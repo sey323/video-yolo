@@ -2,6 +2,7 @@ import base64
 import logging
 import os
 from datetime import datetime as dt
+from glob import glob
 
 import cv2
 import numpy as np
@@ -9,6 +10,22 @@ import openpyxl
 
 logger = logging.getLogger(__name__)
 
+
+class FileUtil:
+    @staticmethod
+    def get_latest_modified_file_path(dirname: str) -> str:
+        """ディレクトリ内で最新に更新されたファイルを得る．
+
+        Args:
+            dirname (str): 検索対象のディレクトリ
+
+        Returns:
+            str: 検索結果のファイルのフルパス
+        """
+        target = os.path.join(dirname, "*")
+        files = [(f, os.path.getmtime(f)) for f in glob(target)]
+        latest_modified_file_path = sorted(files, key=lambda files: files[1])[-1]
+        return latest_modified_file_path[0]
 
 class ImageUtil(object):
     @staticmethod

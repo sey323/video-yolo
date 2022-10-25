@@ -29,16 +29,16 @@ def download_video(
     if not os.path.exists(os.path.join(save_path)):
         os.makedirs(os.path.join(save_path))
 
-    yt_title = YoutubeFacade.download_video(url, save_path)
-    video_file_name = YoutubeFacade.get_latest_modified_file_path(save_path)
+    video_file_name = YoutubeFacade.download_video(url, save_path)
+    video_file_path = os.path.join(save_path, video_file_name)
     # 
     google_drive.upload(
-        save_file_name=f"{yt_title}.mp4", 
-        local_file_path=video_file_name
+        save_file_name=video_file_name, 
+        local_file_path=video_file_path,
+        is_delete=True
     )
-    os.remove(video_file_name)
     
-    return yt_title
+    return video_file_name
 
 
 def download_audio(
@@ -58,17 +58,16 @@ def download_audio(
     if not os.path.exists(os.path.join(save_path)):
         os.makedirs(os.path.join(save_path))
 
-    yt_title = YoutubeFacade.download_audio(url, save_path)
-    audio_file_name = YoutubeFacade.get_latest_modified_file_path(save_path)
-    
+    audio_file_name = YoutubeFacade.download_audio(url, save_path)
+    audio_file_path = os.path.join(save_path, audio_file_name)
     # 
     google_drive.upload(
-        save_file_name=f"{yt_title}.mp3", 
-        local_file_path=audio_file_name
+        save_file_name=audio_file_name, 
+        local_file_path=audio_file_path,
+        is_delete=True
     )
-    os.remove(audio_file_name)
 
-    return yt_title
+    return audio_file_name
 
 
 def clip_image_from_detected(
@@ -200,9 +199,3 @@ def cut_and_detect(
 
     # HTMLに保存
     HTML_dumper.save_html()
-    
-    # 
-    google_drive.upload(
-        save_file_name="一度見たら忘れられない渋谷の美しい夜景 - 4K UHD.mp4" , 
-        local_file_path=save_path + "/一度見たら忘れられない渋谷の美しい夜景 - 4K UHD.mp4"
-    )

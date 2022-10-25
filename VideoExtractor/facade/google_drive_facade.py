@@ -1,3 +1,5 @@
+import os
+
 from pydrive2.auth import GoogleAuth
 from pydrive2.drive import GoogleDrive
 
@@ -10,15 +12,18 @@ class GoogleDriveFacade:
 
         self.drive = GoogleDrive(gauth)
 
-    def upload(self, save_file_name: str, local_file_path: str):
+    def upload(self, save_file_name: str, local_file_path: str, is_delete: bool=False):
         file = self.drive.CreateFile(
             {
                 'title':save_file_name,
-                # 'mimeType': 'image/jpeg',
             }
         )
         file.SetContentFile(local_file_path)
         file.Upload()
+        
+        if is_delete:
+            os.remove(local_file_path)
+            
         
 if __name__ == "__main__":
     g = GoogleDriveFacade()
