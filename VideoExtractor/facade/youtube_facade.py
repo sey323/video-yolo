@@ -116,7 +116,8 @@ class YoutubeFacade(object):
 
         return yt.title
 
-    def get_latest_modified_file_path(self, dirname: str) -> str:
+    @staticmethod
+    def get_latest_modified_file_path(dirname: str) -> str:
         """ディレクトリ内で最新に更新されたファイルを得る．
 
         Args:

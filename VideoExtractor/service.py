@@ -30,11 +30,14 @@ def download_video(
         os.makedirs(os.path.join(save_path))
 
     yt_title = YoutubeFacade.download_video(url, save_path)
+    video_file_name = YoutubeFacade.get_latest_modified_file_path(save_path)
     # 
     google_drive.upload(
         save_file_name=f"{yt_title}.mp4", 
-        local_file_path=os.path.join(save_path, f"{yt_title}.mp4")
+        local_file_path=video_file_name
     )
+    os.remove(video_file_name)
+    
     return yt_title
 
 
@@ -56,11 +59,15 @@ def download_audio(
         os.makedirs(os.path.join(save_path))
 
     yt_title = YoutubeFacade.download_audio(url, save_path)
+    audio_file_name = YoutubeFacade.get_latest_modified_file_path(save_path)
+    
     # 
     google_drive.upload(
         save_file_name=f"{yt_title}.mp3", 
-        local_file_path=os.path.join(save_path, f"{yt_title}.mp3")
+        local_file_path=audio_file_name
     )
+    os.remove(audio_file_name)
+
     return yt_title
 
 
