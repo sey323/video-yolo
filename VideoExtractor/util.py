@@ -2,6 +2,7 @@ import base64
 import logging
 import os
 from datetime import datetime as dt
+from glob import glob
 
 import cv2
 import numpy as np
@@ -9,6 +10,26 @@ import openpyxl
 
 logger = logging.getLogger(__name__)
 
+
+class FileUtil:
+    @staticmethod
+    def get_latest_modified_file_path(dirname: str, fmt:str = 'mp4') -> str:
+        """ディレクトリ内で最後に更新されたファイルを得る．
+
+        Args:
+            dirname (str): 検索対象のディレクトリ
+
+        Returns:
+            str: 検索結果のファイルのフルパス
+        """
+        target = os.path.join(dirname, "*")
+        files = [
+            (f, os.path.getmtime(f)) 
+            for f in glob(target) 
+            if os.path.splitext(f)[1] == f".{fmt}"
+        ]
+        latest_modified_file_path = sorted(files, key=lambda files: files[1])[-1]
+        return latest_modified_file_path[0]
 
 class ImageUtil(object):
     @staticmethod
@@ -28,8 +49,8 @@ class ImageUtil(object):
         return save_image_path
 
 
-class Dumper(object):
-    """動画の検出結果をHTMLとExelファイルに書き込みを実施するクラス。
+class ExcelDumper(object):
+    """動画の検出結果をHTMLとExcelファイルに書き込みを実施するクラス。
 
     Args:
         object ([type]): [description]
@@ -87,14 +108,14 @@ class Dumper(object):
             image_name (str): 画像ファイル名
         """
         save_img_path = os.path.join(self.save_images_path, "{}.jpg".format(image_name))
-        # ExelやHTMLに保存するように画像を保存
+        # ExcelやHTMLに保存するように画像を保存
         resized_image = cv2.resize(
             image, self.img_size, interpolation=cv2.INTER_AREA
         )  # 指定したサイズに画像を縮小
         cv2.imwrite(save_img_path, resized_image)
 
     def add_scene(self, frame: str, time: str, image: np.ndarray, param_path: str):
-        """HTMLとExelにシーンと検出結果を追記する
+        """HTMLとExcelにシーンと検出結果を追記する
 
         Args:
             frame (str): フレーム番号
@@ -122,30 +143,30 @@ class Dumper(object):
             param_data,
         )
 
-        # exelに出力
-        exel_no = self.no + 1
-        self.work_sheet.cell(row=exel_no, column=1).value = self.no
+        # Excelに出力
+        excel_no = self.no + 1
+        self.work_sheet.cell(row=excel_no, column=1).value = self.no
         self.work_sheet.cell(
-            row=exel_no, column=1
+            row=excel_no, column=1
         ).alignment = openpyxl.styles.Alignment(vertical="center")
-        self.work_sheet.cell(row=exel_no, column=2).value = time
+        self.work_sheet.cell(row=excel_no, column=2).value = time
         self.work_sheet.cell(
-            row=exel_no, column=2
+            row=excel_no, column=2
         ).alignment = openpyxl.styles.Alignment(vertical="center")
-        self.work_sheet.cell(row=exel_no, column=4).value = param_data.replace(
+        self.work_sheet.cell(row=excel_no, column=4).value = param_data.replace(
             "<br>", "\n"
         )
         self.work_sheet.cell(
-            row=exel_no, column=4
+            row=excel_no, column=4
         ).alignment = openpyxl.styles.Alignment(vertical="center", wrapText=True)
 
-        # Exelに画像の入力
-        self.work_sheet.row_dimensions[exel_no].height = self.img_size[1] * 0.78
+        # Excelに画像の入力
+        self.work_sheet.row_dimensions[excel_no].height = self.img_size[1] * 0.78
         img = openpyxl.drawing.image.Image(
             os.path.join(self.save_images_path, "{}.jpg".format(str(frame)))
         )
-        img.anchor = self.work_sheet.cell(row=exel_no, column=3)
-        img.anchor = "C" + str(exel_no)
+        img.anchor = self.work_sheet.cell(row=excel_no, column=3)
+        img.anchor = "C" + str(excel_no)
         self.work_sheet.add_image(img)
 
         self.no += 1

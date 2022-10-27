@@ -46,20 +46,20 @@ pip install -r requiremente.txt
 
 #### cli で処理を実行する場合
 
-python cli を利用して処理を実行する場合は、以下のコマンドを用いる。処理結果は`./results/analysis/`以下に保存される。
+python cli を利用して処理を実行する場合は、以下のコマンドを用いる。処理結果は`./results/analytics/`以下に保存される。
 
 ```sh:
 python main.py https://www.youtube.com/watch?v=V1KOF6epx1Q \ # 処理を行うYoutubeの動画のパス
-                --scenedct numeric \ # numericを指定した場合は、MAEなどで直前のシーンと比較し、画面が大きくくり変わった時に処理を行う。
-                --numeric_thres 40 \ # シーン検出を行う場合の閾値
+                --scene_detector numeric \ # numericを指定した場合は、MAEなどで直前のシーンと比較し、画面が大きくくり変わった時に処理を行う。
+                --numeric_threshold 40 \ # シーン検出を行う場合の閾値
                 --save_path sample
 ```
 
-`results/analysis/sample/index.html`を閲覧することで、検出結果を確認できる。
+`results/analytics/sample/index.html`を閲覧することで、検出結果を確認できる。
 
 ![](./docs/sample1.png)
 
-また、`results/analysis/${--save_pathで指定したフォルダ}/`以下に各フォルダが作成され、検出結果が保存される。
+また、`results/analytics/${--save_pathで指定したフォルダ}/`以下に各フォルダが作成され、検出結果が保存される。
 
 - `result.xlsx`: 実行結果を xlsx にしたもの。
 - `cliped`: 検出箇所を切り抜いた画像。各クラスごとにフォルダが作成され、保存される。
@@ -71,8 +71,8 @@ python main.py https://www.youtube.com/watch?v=V1KOF6epx1Q \ # 処理を行うYo
 
 ```sh:
 python main.py -h
-usage: main.py [-h] [--save_path SAVE_PATH] [--scenedct SCENEDCT] [--target_image_path TARGET_IMAGE_PATH] [--face_thres FACE_THRES] [--calc_method CALC_METHOD]
-               [--numeric_thres NUMERIC_THRES]
+usage: main.py [-h] [--save_path SAVE_PATH] [--scene_detector SCENEDCT] [--target_image_path TARGET_IMAGE_PATH] [--face_threshold FACE_threshold] [--calc_method CALC_METHOD]
+               [--numeric_threshold NUMERIC_threshold]
                url
 
 positional arguments:
@@ -82,15 +82,15 @@ optional arguments:
   -h, --help            show this help message and exit
   --save_path SAVE_PATH
                         ダウンロードした動画や検出結果を保存するディレクトリへのパス
-  --scenedct SCENEDCT   シーンをカットする方法(face: --target_image_pathで指定した顔画像が出現した場合。, numeric: 直前のフレームとの差分)
+  --scene_detector SCENEDCT   シーンをカットする方法(face: --target_image_pathで指定した顔画像が出現した場合。, numeric: 直前のフレームとの差分)
   --target_image_path TARGET_IMAGE_PATH
-                        scenedct=faceの時、検出対象の顔画像のパス
-  --face_thres FACE_THRES
-                        scenedct=faceの時、シーンをカットする変数の閾値
+                        scene_detector=faceの時、検出対象の顔画像のパス
+  --face_threshold FACE_threshold
+                        scene_detector=faceの時、シーンをカットする変数の閾値
   --calc_method CALC_METHOD
-                        scenedct=numericの時、シーンをカットするメソッド(MAE, MSE, MAE_HSV, MAE_block)
-  --numeric_thres NUMERIC_THRES
-                        scenedct=numericの時、シーンをカットする変数の閾値
+                        scene_detector=numericの時、シーンをカットするメソッド(MAE, MSE, MAE_HSV, MAE_block)
+  --numeric_threshold NUMERIC_threshold
+                        scene_detector=numericの時、シーンをカットする変数の閾値
 ```
 
 #### API 経由で実行する場合 API 経由で実行する場合
@@ -107,6 +107,6 @@ python api.py
 | -------- | ------------------------------- | ----------------------------------------------------------- |
 | GET      | `localhost:3000/download/video` | 動画をダウンロードする。                                    |
 | GET      | `localhost:3000/download/audio` | 動画から音声情報のみを抽出しダウンロードする。              |
-| POST     | `localhost:3000/analysis`       | URL で指定した動画に対して、YOLO による物体検出処理を行う。 |
+| POST     | `localhost:3000/analytics`       | URL で指定した動画に対して、YOLO による物体検出処理を行う。 |
 
 各 API の詳細に関しては、`test`フォルダに [Postman](https://www.postman.com/) のサンプルがあるので、そちらを参照。
