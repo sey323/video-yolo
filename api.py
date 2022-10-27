@@ -34,12 +34,12 @@ def get_download_video():
     if not url:
         return make_response("Please set video path")
 
-    service.download_video(
+    response: dict = service.download_video(
         url,
         save_path=save_path,
     )
 
-    return make_response(save_path)
+    return make_response(response)
 
 
 # ダウンロード用API
@@ -57,7 +57,7 @@ def get_download_audio():
     if not url:
         return make_response("Please set video path")
 
-    service.download_audio(
+    response: dict = service.download_audio(
         url,
         save_path=save_path,
     )
@@ -112,6 +112,9 @@ def video_analytics():
 @api.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({"error": "Not found"}), 404)
+
+
+
 
 
 if __name__ == "__main__":

@@ -32,13 +32,16 @@ def download_video(
     video_file_name = YoutubeFacade.download_video(url, save_path)
     video_file_path = os.path.join(save_path, video_file_name)
     # 
-    google_drive.upload(
+    url = google_drive.upload(
         save_file_name=video_file_name, 
         local_file_path=video_file_path,
         is_delete=True
     )
     
-    return video_file_name
+    return {
+        "file_name": video_file_name,
+        "url": url
+    }
 
 
 def download_audio(
@@ -61,13 +64,16 @@ def download_audio(
     audio_file_name = YoutubeFacade.download_audio(url, save_path)
     audio_file_path = os.path.join(save_path, audio_file_name)
     # 
-    google_drive.upload(
+    url = google_drive.upload(
         save_file_name=audio_file_name, 
         local_file_path=audio_file_path,
         is_delete=True
     )
 
-    return audio_file_name
+    return {
+        "file_name": audio_file_name,
+        "url": url
+    }
 
 
 def clip_image_from_detected(

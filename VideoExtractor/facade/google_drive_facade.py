@@ -24,6 +24,9 @@ class GoogleDriveFacade:
         if is_delete:
             os.remove(local_file_path)
             
+        image_url = f"https://drive.google.com/uc?id={str( file['id'] )}" 
+        return image_url
+            
         
 if __name__ == "__main__":
     g = GoogleDriveFacade()
