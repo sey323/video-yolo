@@ -91,16 +91,16 @@ class SceneDetector:
 
 
 class ObjectiveSceneDetector:
-    def __init__(self, target_image_path: str, numeric_thres: float = 60.0):
+    def __init__(self, target_image_path: str, numeric_threshold: float = 60.0):
         logger.info("Load target face image: {}".format(target_image_path))
         image = face_recognition.load_image_file(target_image_path)
         loc = face_recognition.face_locations(image, model="hog")
         self.base_face_feature = face_recognition.face_encodings(image, loc)
-        self.numeric_thres = numeric_thres
+        self.numeric_threshold = numeric_threshold
 
     def face_distance(self, now: np.ndarray, prev: np.ndarray) -> float:
         # 直前の画像と似ている画像であれば取得しない
-        if SceneDetector.MAE(now, prev) < self.numeric_thres:
+        if SceneDetector.MAE(now, prev) < self.numeric_threshold:
             return 0
 
         loc = face_recognition.face_locations(now, model="hog")

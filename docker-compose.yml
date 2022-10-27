@@ -7,6 +7,6 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ${ANALYSIS_RESULT_PATH}:/home/video-yolo/results/analysis
+      - ${ANALYTICS_RESULT_PATH}:/home/video-yolo/results/analytics
       - ${AUDIO_SAVE_PATH}:/home/video-yolo/results/audio
       - ${VIDEO_SAVE_PATH}:/home/video-yolo/results/video

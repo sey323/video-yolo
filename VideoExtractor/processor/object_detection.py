@@ -8,7 +8,7 @@ import torch
 logger = logging.getLogger(__name__)
 
 
-class Yolov5Torch(object):
+class YoloV5(object):
     def __init__(self):
         # Model
         self.model = torch.hub.load("ultralytics/yolov5", "yolov5s", pretrained=True)
