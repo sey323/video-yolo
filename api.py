@@ -3,6 +3,7 @@ import os
 from datetime import datetime as dt
 
 from flask import Flask, jsonify, make_response, request
+from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 api = Flask(__name__)
 api.config["APPLICATION_ROOT"] = "/media/v1/yt"
@@ -13,6 +14,7 @@ AUDIO_SAVE_PATH = os.getenv("AUDIO_SAVE_PATH", default="results/audio")
 VIDEO_SAVE_PATH = os.getenv("VIDEO_SAVE_PATH", default="results/video")
 
 import VideoExtractor.service as service
+from VideoExtractor import handler, line_bot_api
 from VideoExtractor.processor.object_detection import YoloV5
 from VideoExtractor.processor.scene_detection import (ObjectiveSceneDetector,
                                                       SceneDetector)
@@ -113,9 +115,27 @@ def video_analytics():
 def not_found(error):
     return make_response(jsonify({"error": "Not found"}), 404)
 
+@api.route("/callback", methods=['POST'])
+def callback():
+    # get X-Line-Signature header value
+    signature = request.headers['X-Line-Signature']
+    
+    # get request body as text
+    body = request.get_data(as_text=True)
+    
+    # handle webhook body
+    handler.handle(body, signature)
 
-
-
+# handle message from LINE
+@handler.add(MessageEvent, message=TextMessage)
+def handle_message(event):
+    response: dict = service.download_video(
+        url=event.message.text,
+        save_path=VIDEO_SAVE_PATH,
+    )
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=response.get('url')))
 
 if __name__ == "__main__":
     detector = YoloV5()
