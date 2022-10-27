@@ -11,10 +11,8 @@ RUN pip install pip==21.2.4 \
     && pip install --no-cache-dir -r requirements.txt 
 
 # 実行環境の準備
-ENV APP_NAME video-yolo
-WORKDIR /home/$APP_NAME
-COPY ./src ./src
-COPY main.py .
-COPY api.py .
+ENV HOME /app
+WORKDIR $HOME
+COPY ./ .
 
 CMD [ "python", "./api.py" ]    
