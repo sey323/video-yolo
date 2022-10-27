@@ -12,7 +12,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"url\": \"http://youtube.com/watch?v=2lAe1cqCOXo\",\n    \"scenedct\": \"numeric\",\n    \"numeric_thres\": 50,\n    \"save_path\": \"sample\"\n}",
+					"raw": "{\n    \"url\": \"http://youtube.com/watch?v=2lAe1cqCOXo\",\n    \"scene_detector\": \"numeric\",\n    \"numeric_threshold\": 50,\n    \"save_path\": \"sample\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -20,13 +20,13 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/analysis",
+					"raw": "localhost:3000/analytics",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"analysis"
+						"analytics"
 					]
 				}
 			},
