@@ -4,5 +4,5 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-line_channel_access_token = environ.get("LINE_CHANNEL_ACCESS_TOKEN", '')
-line_channel_secret = environ.get("LINE_CHANNEL_SECRET", '')
+slack_api_token = environ.get("SLACK_APP_TOKEN", '')
+slack_bot_token = environ.get("SLACK_BOT_TOKEN", '')
