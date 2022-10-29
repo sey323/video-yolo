@@ -1,5 +1,4 @@
 
-import logging
 import os
 import pickle
 from pathlib import Path
@@ -27,7 +26,7 @@ class GooglePhotoFacade:
             static_discovery=False,
         ) as service:
             self.service = service
-            logger.info("Google OAuth is Complete.")
+            print("Google OAuth is Complete.")
 
         self.credential_path = credential_path
         self.token_path = token_path
@@ -48,14 +47,14 @@ class GooglePhotoFacade:
             with open(token_path, "rb") as token:
                 credential = pickle.load(token)
             if credential.valid:
-                logger.info("トークンが有効です.")
+                print("トークンが有効です.")
                 return credential
             if credential and credential.expired and credential.refresh_token:
-                logger.info("トークンの期限切れのため、リフレッシュします.")
+                print("トークンの期限切れのため、リフレッシュします.")
                 # TOKENをリフレッシュ
                 credential.refresh(Request())
         else:
-            logger.info("トークンが存在しないため、作成します.")
+            print("トークンが存在しないため、作成します.")
             # TOKENファイルがない場合は認証フローを起動する(Default: host=localhost, port=8080)
             credential = InstalledAppFlow.from_client_secrets_file(
                 credential_path, SCOPES
@@ -76,7 +75,7 @@ class GooglePhotoFacade:
             headers = {
                 'Authorization': "Bearer " + self.service._http.credentials.token,
                 'Content-Type': 'application/octet-stream',
-                'X-Goog-Upload-File-Name': save_file_name,
+                'X-Goog-Upload-File-Name': save_file_name.encode(),
                 'X-Goog-Upload-Protocol': "raw",
             }
             response = requests.post(url, data=image_data.raw, headers=headers)
