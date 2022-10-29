@@ -13,7 +13,6 @@ AUDIO_SAVE_PATH = os.getenv("AUDIO_SAVE_PATH", default="results/audio")
 VIDEO_SAVE_PATH = os.getenv("VIDEO_SAVE_PATH", default="results/video")
 
 import VideoExtractor.service as service
-from VideoExtractor import handler, line_bot_api
 from VideoExtractor.processor.object_detection import YoloV5
 from VideoExtractor.processor.scene_detection import (ObjectiveSceneDetector,
                                                       SceneDetector)
@@ -25,12 +24,20 @@ from VideoExtractor.util import ImageUtil
 def get_download_video():
     # リクエストパラメータを取得
     params = request.args
-
+    
+    save_media_type = (
+        params.get("save_media_type")
+        if params.get("save_path")
+        else "photo"
+    )
+    
+    # 「save_media_type=local」の場合、ローカルに保存するパスを指定
     save_path = (
         os.path.join(VIDEO_SAVE_PATH, params.get("save_path"))
         if params.get("save_path")
         else VIDEO_SAVE_PATH
     )
+    
     url = params.get("url")
     if not url:
         return make_response("Please set video path")
@@ -38,6 +45,7 @@ def get_download_video():
     response: dict = service.download_video(
         url,
         save_path=save_path,
+        save_media_type=save_media_type
     )
 
     return make_response(response)
@@ -49,6 +57,13 @@ def get_download_audio():
     # リクエストパラメータを取得
     params = request.args
 
+    save_media_type = (
+        params.get("save_media_type")
+        if params.get("save_path")
+        else "local"
+    )
+    
+    # 「save_media_type=local」の場合、ローカルに保存するパスを指定
     save_path = (
         os.path.join(AUDIO_SAVE_PATH, params.get("save_path"))
         if params.get("save_path")
@@ -61,9 +76,10 @@ def get_download_audio():
     response: dict = service.download_audio(
         url,
         save_path=save_path,
+        save_media_type=save_media_type
     )
 
-    return make_response(save_path)
+    return make_response(response)
 
 
 # 動画分析API

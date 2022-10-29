@@ -6,15 +6,65 @@ import cv2
 import numpy as np
 
 from VideoExtractor.facade.google_drive_facade import GoogleDriveFacade
+from VideoExtractor.facade.google_photo_facade import GooglePhotoFacade
 from VideoExtractor.facade.youtube_facade import YoutubeFacade
 from VideoExtractor.util import ExcelDumper
 
 logger = logging.getLogger(__name__)
 google_drive = GoogleDriveFacade()
+google_photo = GooglePhotoFacade(
+        credential_path = "keys/client_secrets.json",
+        token_path='keys/token.pkl'
+    )
+
+
+def save_media(save_media_type: str, save_file_name: str, local_file_path: str, ):
+    """メディアファイルを任意のストレージに保存する。
+
+    Args:
+        save_media_type (str): _description_
+        save_file_name (str): _description_
+        local_file_path (str): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    if save_media_type == "local":
+        return {
+            "file_name": save_file_name,
+            "url": local_file_path
+        }
+    elif save_media_type == "drive":
+        url = google_drive.upload(
+            save_file_name=save_file_name, 
+            local_file_path=local_file_path,
+            is_delete=True
+        )
+        return {
+            "file_name": save_file_name,
+            "url": url
+        }
+    elif save_media_type == "photo":
+        url = google_photo.upload(
+            save_file_name=save_file_name, 
+            local_file_path=local_file_path,
+            is_delete=True
+        )
+        return {
+            "file_name": save_file_name,
+            "url": url
+        }
+    else:
+        # ファイルを削除してエラーを通知
+        os.remove(local_file_path)
+        return {
+            "status": "error"
+        }
 
 def download_video(
     url: str,
     save_path: str,
+    save_media_type: str = "local"
 ) -> str:
     """YoutubeのURLから動画をダウンロードし、タイトルを返す。
 
@@ -32,21 +82,17 @@ def download_video(
     video_file_name = YoutubeFacade.download_video(url, save_path)
     video_file_path = os.path.join(save_path, video_file_name)
     # 
-    url = google_drive.upload(
+    return save_media(
+        save_media_type=save_media_type,
         save_file_name=video_file_name, 
         local_file_path=video_file_path,
-        is_delete=True
     )
-    
-    return {
-        "file_name": video_file_name,
-        "url": url
-    }
 
 
 def download_audio(
     url: str,
     save_path: str,
+    save_media_type: str = "local"
 ) -> str:
     """YoutubeのURLから動画を音楽に変換しダウンロードし、タイトルを返す。
 
@@ -64,16 +110,12 @@ def download_audio(
     audio_file_name = YoutubeFacade.download_audio(url, save_path)
     audio_file_path = os.path.join(save_path, audio_file_name)
     # 
-    url = google_drive.upload(
+
+    return save_media(
+        save_media_type=save_media_type,
         save_file_name=audio_file_name, 
         local_file_path=audio_file_path,
-        is_delete=True
     )
-
-    return {
-        "file_name": audio_file_name,
-        "url": url
-    }
 
 
 def clip_image_from_detected(
