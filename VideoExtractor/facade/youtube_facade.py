@@ -125,7 +125,7 @@ class YoutubeFacade(object):
             result = ydl.download(
                 url, 
             )
-            save_full_path = FileUtil.get_latest_modified_file_path(save_path)
+            save_full_path = FileUtil.get_latest_modified_file_path(save_path, fmt="mp3")
 
         return os.path.basename(save_full_path)
 
