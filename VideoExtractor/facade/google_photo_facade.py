@@ -81,11 +81,13 @@ class GooglePhotoFacade:
             response = requests.post(url, data=image_data.raw, headers=headers)
 
         upload_token = response.content.decode('utf-8')
+        print("Google Photoへのアップロードが完了しました。")
         body = {
             'newMediaItems': [{"simpleMediaItem": {'uploadToken': upload_token}}]
         }
         
         upload_response = self.service.mediaItems().batchCreate(body=body).execute()
+        print("Google Photoへのアップロードした動画の登録に成功しました。")
         
         if is_delete:
             os.remove(local_file_path)

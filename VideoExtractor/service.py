@@ -45,14 +45,14 @@ def save_media(save_media_type: str, save_file_name: str, local_file_path: str, 
             "url": url
         }
     elif save_media_type == "photo":
-        url = google_photo.upload(
+        response = google_photo.upload(
             save_file_name=save_file_name, 
             local_file_path=local_file_path,
             is_delete=True
         )
         return {
             "file_name": save_file_name,
-            "url": url
+            "url": response.get('productUrl')
         }
     else:
         # ファイルを削除してエラーを通知
