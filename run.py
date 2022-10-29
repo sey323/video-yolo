@@ -2,6 +2,8 @@ import json
 import logging
 import os
 
+from sqlalchemy import true
+
 logging.basicConfig(level=logging.INFO)
 
 from slack_bolt import Ack, App, BoltContext, Say
@@ -57,6 +59,7 @@ def download_from_youtube_shortcut(
                             "type": "plain_text",
                             "text": "YoutubeのURLを入力してください。",
                         },
+                        "focus_on_load": True,
                     },
                     "label": {"type": "plain_text", "text": "url"},
                 },
@@ -64,10 +67,30 @@ def download_from_youtube_shortcut(
                     "type": "input",
                     "block_id": "fmt",
                     "element": {
-                        "type": "external_select",
-                        "action_id": "download_type",
+                        "type": "static_select",
+                        "action_id": "selected_fmt",
                         "placeholder": {"type": "plain_text", "text": "ダウンロードするフォーマットを選択してください。"},
-                        "min_query_length": 0,
+                        "initial_option": {"text": {"type": "plain_text", "text": "動画"}, "value": "mp4"},
+                        "options": [
+                            {"text": {"type": "plain_text", "text": "動画"}, "value": "mp4"},
+                            {"text": {"type": "plain_text", "text": "音楽"}, "value": "mp3"}
+                        ],
+                    },
+                    "label": {"type": "plain_text", "text": "保存形式"},
+                },
+                {
+                    "type": "input",
+                    "block_id": "media_type",
+                    "element": {
+                        "type": "static_select",
+                        "action_id": "selected_media_type",
+                        "placeholder": {"type": "plain_text", "text": "アップロードするメディアのタイプを選択してください。"},
+                        "initial_option": {"text": {"type": "plain_text", "text": "Google Photo"}, "value": "photo"},
+                        "options": [
+                            {"text": {"type": "plain_text", "text": "Google Photo"}, "value": "photo"},
+                            {"text": {"type": "plain_text", "text": "Google Drive"}, "value": "drive"},
+                            {"text": {"type": "plain_text", "text": "ローカル"}, "value": "local"},
+                        ],
                     },
                     "label": {"type": "plain_text", "text": "保存形式"},
                 },
@@ -106,14 +129,6 @@ def download_from_youtube_shortcut(
     )
 
 
-@app.options("download_type")
-def show_options(ack):
-    ack({"options": [
-        {"text": {"type": "plain_text", "text": "動画"}, "value": "mp4"},
-        {"text": {"type": "plain_text", "text": "音楽"}, "value": "mp3"}
-        ]})
-
-
 @app.view("download_from_youtube")
 def download_process_start(ack: Ack, view: dict, say: Say):
     ack()
@@ -133,7 +148,8 @@ def download_process_start(ack: Ack, view: dict, say: Say):
         text=f"動画のダウンロードを開始します。")
 
     url: str = view['state']['values']['url']['input']['value']
-    fmt: str = view['state']['values']['fmt']['download_type']['selected_option']['value']
+    fmt: str = view['state']['values']['fmt']['selected_fmt']['selected_option']['value']
+    save_media_type: str = view['state']['values']['media_type']['selected_media_type']['selected_option']['value']
 
     # ダウンロード処理    
     if fmt == "mp4":
@@ -141,11 +157,13 @@ def download_process_start(ack: Ack, view: dict, say: Say):
         response: dict = service.download_video(
             url,
             save_path=VIDEO_SAVE_PATH,
+            save_media_type=save_media_type
         )
     elif fmt == "mp3":
         response: dict = service.download_audio(
             url,
             save_path=AUDIO_SAVE_PATH,
+            save_media_type=save_media_type
         )
     else:
         response = None
