@@ -1,6 +1,10 @@
+import io
+import re
+
 import cv2
 import face_recognition
 import numpy as np
+import requests
 from config import logger
 
 
@@ -90,7 +94,12 @@ class SceneDetector:
 class ObjectiveSceneDetector:
     def __init__(self, target_image_path: str, numeric_threshold: float = 60.0):
         logger.info("Load target face image: {}".format(target_image_path))
-        image = face_recognition.load_image_file(target_image_path)
+        if re.match("https?://[\w/:%#\$&\?\(\)~\.=\+\-]+", target_image_path):
+            # URLが入力された場合はbytesに変換する。
+            target_image_source = io.BytesIO(requests.get(target_image_path).content)
+        else:
+            target_image_source = target_image_path
+        image = face_recognition.load_image_file(target_image_source)
         loc = face_recognition.face_locations(image, model="hog")
         self.base_face_feature = face_recognition.face_encodings(image, loc)
         self.numeric_threshold = numeric_threshold

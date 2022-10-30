@@ -1,0 +1,70 @@
+{
+    "type": "modal",
+    "callback_id": "analytics_video",
+    "title": {"type": "plain_text", "text": "Youtubeの動画を解析"},
+    "submit": {"type": "plain_text", "text": "送信"},
+    "close": {"type": "plain_text", "text": "キャンセル"},
+    "private_metadata": "{}",
+    "blocks": [
+        {
+            "type": "input",
+            "block_id": "url",
+            "element": {
+                "type": "url_text_input",
+                "action_id": "input",
+                "placeholder": {
+                    "type": "plain_text",
+                    "text": "Youtubeの動画のURLを入力してください。"
+                },
+                "focus_on_load": true
+            },
+            "label": {"type": "plain_text", "text": "url"}
+        },
+        {
+            "type": "input",
+            "block_id": "scene_detector",
+            "element": {
+                "type": "static_select",
+                "action_id": "selected_scene_detector",
+                "placeholder": {"type": "plain_text", "text": "シーンをカットする方法を選択してください"},
+                "initial_option": {"text": {"type": "plain_text", "text": "直前のフレームとの差分"}, "value": "numeric"},
+                "options": [
+                    {"text": {"type": "plain_text", "text": "直前のフレームとの差分"}, "value": "numeric"},
+                    {"text": {"type": "plain_text", "text": "顔画像の類似度"}, "value": "face"}
+                ]
+            },
+            "label": {"type": "plain_text", "text": "シーンのカット手法"}
+        },
+        {
+            "type": "input",
+            "block_id": "numeric_threshold",
+            "element": {
+                "type": "number_input",
+                "is_decimal_allowed": true,
+                "action_id": "input_numeric_threshold",
+                "min_value": "0",
+                "max_value": "1",
+                "initial_value": "0.8",
+                "placeholder": {
+                    "type": "plain_text",
+                    "text": "閾値を0~1の範囲で入力してください"
+                }
+            },
+            "label": {"type": "plain_text", "text": "閾値"}
+        },
+        {
+            "type": "input",
+            "optional": true,
+            "block_id": "face_image_url",
+            "element": {
+                "type": "url_text_input",
+                "action_id": "face_image_url_text_input",
+                "placeholder": {
+                    "type": "plain_text",
+                    "text": "顔認識をする(scene_detector=顔画像の類似度)場合、対象人物の顔のURLを入力してください"
+                }
+            },
+            "label": {"type": "plain_text", "text": "認識対象の顔画像のURL"}
+        }
+    ]
+}
