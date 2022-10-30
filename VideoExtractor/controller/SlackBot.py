@@ -12,10 +12,11 @@ app = App(token=config.slack_bot_token)
 # イベント API
 @app.message(r'(https)(:\/\/[\w\/:%#\$&\?\(\)~\.=\+\-]+)')
 def download_from_youtube(message, say):
-    say(f"動画のダウンロードを開始します。")
+    say(f"動画のダウンロードを開始します。デフォルトのGoogleDriveに保存します。")
     response: dict = service.download_video(
         message['text'][1:-1],
         save_path=config.video_save_path,
+        save_media_type="drive"
     )
     say(f"""ダウンロードが完了しました。
         ファイル名: {response.get('file_name')}
