@@ -1,5 +1,4 @@
 import base64
-import logging
 import os
 from datetime import datetime as dt
 from glob import glob
@@ -7,8 +6,7 @@ from glob import glob
 import cv2
 import numpy as np
 import openpyxl
-
-logger = logging.getLogger(__name__)
+from config import logger
 
 
 class FileUtil:
@@ -95,6 +93,7 @@ class ExcelDumper(object):
 
         self.save_path = save_path
         self.save_images_path = os.path.join(self.save_path, "material")
+        self.save_excel_file_name = os.path.join(self.save_path, "result.xlsx")
 
         # フォルダを作成する
         os.makedirs(self.save_path, exist_ok=True)
@@ -177,5 +176,8 @@ class ExcelDumper(object):
         with open(os.path.join(self.save_path, "index.html"), mode="w") as f:
             f.write(html)
 
-        self.work_book.save(os.path.join(self.save_path, "result.xlsx"))
+        self.work_book.save(self.save_excel_file_name)
         logger.info(f"Html save complete!: {self.save_path}")
+
+    def get_save_file_name(self):
+        return self.save_excel_file_name

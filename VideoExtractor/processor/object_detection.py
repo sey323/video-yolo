@@ -1,11 +1,9 @@
-import logging
 import os
 
 import cv2
 import numpy as np
 import torch
-
-logger = logging.getLogger(__name__)
+from config import logger
 
 
 class YoloV5(object):
@@ -50,5 +48,5 @@ class YoloV5(object):
         # 画像に保存
         cv2.imwrite(
             os.path.join(self.save_path, "img", "{}.jpg".format(file_name_prefix)),
-            results.imgs[0],
+            results.ims[0],
         )

@@ -1,21 +1,13 @@
 import json
-import logging
-import os
 
-from sqlalchemy import true
-
-logging.basicConfig(level=logging.INFO)
-
+import config
+from config import logger
 from slack_bolt import Ack, App, BoltContext, Say
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_sdk import WebClient
-
-import config
 from VideoExtractor import service
 
 app = App(token=config.slack_bot_token)
-VIDEO_SAVE_PATH = os.getenv("VIDEO_SAVE_PATH", default="results/video")
-AUDIO_SAVE_PATH = os.getenv("AUDIO_SAVE_PATH", default="results/audio")
 
 # イベント API
 @app.message(r'(https)(:\/\/[\w\/:%#\$&\?\(\)~\.=\+\-]+)')
@@ -23,7 +15,7 @@ def download_from_youtube(message, say):
     say(f"動画のダウンロードを開始します。")
     response: dict = service.download_video(
         message['text'][1:-1],
-        save_path=VIDEO_SAVE_PATH,
+        save_path=config.video_save_path,
     )
     say(f"""ダウンロードが完了しました。
         ファイル名: {response.get('file_name')}
@@ -92,7 +84,7 @@ def download_from_youtube_shortcut(
                             {"text": {"type": "plain_text", "text": "ローカル"}, "value": "local"},
                         ],
                     },
-                    "label": {"type": "plain_text", "text": "保存形式"},
+                    "label": {"type": "plain_text", "text": "保存するメディア"},
                 },
             ],
         }
@@ -156,13 +148,13 @@ def download_process_start(ack: Ack, view: dict, say: Say):
         # say(f"動画のダウンロードを開始します。")
         response: dict = service.download_video(
             url,
-            save_path=VIDEO_SAVE_PATH,
+            save_path=config.video_save_path,
             save_media_type=save_media_type
         )
     elif fmt == "mp3":
         response: dict = service.download_audio(
             url,
-            save_path=AUDIO_SAVE_PATH,
+            save_path=config.audio_save_path,
             save_media_type=save_media_type
         )
     else:
@@ -181,6 +173,7 @@ def download_process_start(ack: Ack, view: dict, say: Say):
 def handle_app_mention_events(body, logger):
     logger.info(body)
 
-if __name__ == "__main__":
+
+def start():
     handler = SocketModeHandler(app, config.slack_api_token)
     handler.start()
