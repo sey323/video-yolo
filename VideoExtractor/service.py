@@ -247,10 +247,16 @@ def cut_and_detect(
     # HTMLに保存
     excel_dumper.save_html()
     
-    # Google Driveに保存
+    # スプレッドシートのアップロード
     url = google_drive.upload(
         save_file_name = "result.xlsx", 
         local_file_path = excel_dumper.get_save_file_name(),
+        save_folder_name = youtube_facade.get_title(),
+    )
+    # 動画のアップロード
+    url = google_drive.upload(
+        save_file_name = f"{youtube_facade.get_title()}.mp4", 
+        local_file_path = youtube_facade.get_fullpath(),
         save_folder_name = youtube_facade.get_title(),
     )
     
