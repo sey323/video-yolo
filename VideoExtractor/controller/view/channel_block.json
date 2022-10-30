@@ -1,0 +1,14 @@
+{
+    "type": "input",
+    "block_id": "channel_to_notify",
+    "element": {
+        "type": "conversations_select",
+        "action_id": "_",
+        "response_url_enabled": true,
+        "default_to_current_conversation": true
+    },
+    "label": {
+        "type": "plain_text",
+        "text": "起動したチャンネル"
+    }
+}

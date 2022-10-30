@@ -62,7 +62,7 @@ python main.py https://www.youtube.com/watch?v=V1KOF6epx1Q \ # 処理を行うYo
 また、`results/analytics/${--save_pathで指定したフォルダ}/`以下に各フォルダが作成され、検出結果が保存される。
 
 - `result.xlsx`: 実行結果を xlsx にしたもの。
-- `cliped`: 検出箇所を切り抜いた画像。各クラスごとにフォルダが作成され、保存される。
+- `clipped`: 検出箇所を切り抜いた画像。各クラスごとにフォルダが作成され、保存される。
 - `param`: 各画像の検出領域とそのクラスである確率。
 - `img`: 処理が行われたシーンの元画像。
 - `material`: 検出箇所とクラスを描画した画像。このフォルダ内の画像が`index.html`から参照されている。
@@ -71,7 +71,7 @@ python main.py https://www.youtube.com/watch?v=V1KOF6epx1Q \ # 処理を行うYo
 
 ```sh:
 python main.py -h
-usage: main.py [-h] [--save_path SAVE_PATH] [--scene_detector SCENEDCT] [--target_image_path TARGET_IMAGE_PATH] [--face_threshold FACE_threshold] [--calc_method CALC_METHOD]
+usage: main.py [-h] [--save_path SAVE_PATH] [--scene_detector SCENEDCT] [--target_image_path TARGET_IMAGE_PATH] [--face_threshold FACE_threshold] [--cut_method CALC_METHOD]
                [--numeric_threshold NUMERIC_threshold]
                url
 
@@ -87,7 +87,7 @@ optional arguments:
                         scene_detector=faceの時、検出対象の顔画像のパス
   --face_threshold FACE_threshold
                         scene_detector=faceの時、シーンをカットする変数の閾値
-  --calc_method CALC_METHOD
+  --cut_method CALC_METHOD
                         scene_detector=numericの時、シーンをカットするメソッド(MAE, MSE, MAE_HSV, MAE_block)
   --numeric_threshold NUMERIC_threshold
                         scene_detector=numericの時、シーンをカットする変数の閾値

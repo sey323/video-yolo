@@ -1,16 +1,13 @@
-import logging
-
 import cv2
 import face_recognition
 import numpy as np
-
-logger = logging.getLogger(__name__)
+from config import logger
 
 
 class SceneDetector:
-    def __init__(self, calc_method: str = "MAE"):
-        self.calc_method = calc_method
-        logger.info("Use method: {}".format(calc_method))
+    def __init__(self, cut_method: str = "MAE"):
+        self.cut_method = cut_method
+        logger.info("Use method: {}".format(cut_method))
 
     def image_distance(self, now: np.ndarray, prev: np.ndarray) -> float:
         """入力した2枚の画像の距離を計算する。
@@ -22,13 +19,13 @@ class SceneDetector:
         Returns:
             float: 計算された距離
         """
-        if self.calc_method == "MAE":
+        if self.cut_method == "MAE":
             return self.MAE(now, prev)
-        elif self.calc_method == "MSE":
+        elif self.cut_method == "MSE":
             return self.MSE(now, prev)
-        elif self.calc_method == "MAE_HSV":
+        elif self.cut_method == "MAE_HSV":
             return self.MAE_HSV(now, prev)
-        elif self.calc_method == "MAE_block":
+        elif self.cut_method == "MAE_block":
             return self.MAE_block(now, prev)
 
     @staticmethod

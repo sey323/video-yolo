@@ -1,0 +1,55 @@
+{
+    "type": "modal",
+    "callback_id": "download_from_youtube",
+    "title": {"type": "plain_text", "text": "Youtubeからダウンロード"},
+    "submit": {"type": "plain_text", "text": "送信"},
+    "close": {"type": "plain_text", "text": "キャンセル"},
+    "private_metadata": "{}",
+    "blocks": [
+        {
+            "type": "input",
+            "block_id": "url",
+            "element": {
+                "type": "plain_text_input",
+                "action_id": "input",
+                "placeholder": {
+                    "type": "plain_text",
+                    "text": "YoutubeのURLを入力してください。"
+                },
+                "focus_on_load": true
+            },
+            "label": {"type": "plain_text", "text": "url"}
+        },
+        {
+            "type": "input",
+            "block_id": "fmt",
+            "element": {
+                "type": "static_select",
+                "action_id": "selected_fmt",
+                "placeholder": {"type": "plain_text", "text": "ダウンロードするフォーマットを選択してください。"},
+                "initial_option": {"text": {"type": "plain_text", "text": "動画"}, "value": "mp4"},
+                "options": [
+                    {"text": {"type": "plain_text", "text": "動画"}, "value": "mp4"},
+                    {"text": {"type": "plain_text", "text": "音楽"}, "value": "mp3"}
+                ]
+            },
+            "label": {"type": "plain_text", "text": "保存形式"}
+        },
+        {
+            "type": "input",
+            "block_id": "media_type",
+            "element": {
+                "type": "static_select",
+                "action_id": "selected_media_type",
+                "placeholder": {"type": "plain_text", "text": "アップロードするメディアのタイプを選択してください。"},
+                "initial_option": {"text": {"type": "plain_text", "text": "Google Photo"}, "value": "photo"},
+                "options": [
+                    {"text": {"type": "plain_text", "text": "Google Photo"}, "value": "photo"},
+                    {"text": {"type": "plain_text", "text": "Google Drive"}, "value": "drive"},
+                    {"text": {"type": "plain_text", "text": "ローカル"}, "value": "local"}
+                ]
+            },
+            "label": {"type": "plain_text", "text": "保存するメディア"}
+        }
+    ]
+}
