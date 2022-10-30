@@ -68,7 +68,7 @@ class ExcelDumper(object):
         # openpyxl
         self.work_book = openpyxl.Workbook()
         self.work_sheet = self.work_book.worksheets[0]
-        self.work_sheet.column_dimensions["C"].width = img_size[0] * 0.125
+        self.work_sheet.column_dimensions["C"].width = img_size[0] * 0.15
         self.work_sheet.column_dimensions["D"].width = 30
 
         # 初期設定
