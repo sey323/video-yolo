@@ -55,7 +55,7 @@ class GoogleDriveFacade:
             }
         )
         file.SetContentFile(local_file_path)
-        file.Upload()
+        file.Upload({'convert': True})
         
         if is_delete:
             os.remove(local_file_path)

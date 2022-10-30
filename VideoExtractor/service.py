@@ -38,6 +38,7 @@ def save_media(save_media_type: str, save_file_name: str, local_file_path: str, 
         url = google_drive.upload(
             save_file_name=save_file_name, 
             local_file_path=local_file_path,
+            save_folder_name = os.path.basename(local_file_path),
             is_delete=True
         )
         return {
