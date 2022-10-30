@@ -4,6 +4,7 @@ import pickle
 from pathlib import Path
 
 import requests
+from config import logger
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
@@ -26,7 +27,7 @@ class GooglePhotoFacade:
             static_discovery=False,
         ) as service:
             self.service = service
-            print("Google OAuth is Complete.")
+            logger.info("Google OAuth is Complete.")
 
         self.credential_path = credential_path
         self.token_path = token_path
@@ -47,14 +48,14 @@ class GooglePhotoFacade:
             with open(token_path, "rb") as token:
                 credential = pickle.load(token)
             if credential.valid:
-                print("トークンが有効です.")
+                logger.info("トークンが有効です.")
                 return credential
             if credential and credential.expired and credential.refresh_token:
-                print("トークンの期限切れのため、リフレッシュします.")
+                logger.info("トークンの期限切れのため、リフレッシュします.")
                 # TOKENをリフレッシュ
                 credential.refresh(Request())
         else:
-            print("トークンが存在しないため、作成します.")
+            logger.info("トークンが存在しないため、作成します.")
             # TOKENファイルがない場合は認証フローを起動する(Default: host=localhost, port=8080)
             credential = InstalledAppFlow.from_client_secrets_file(
                 credential_path, SCOPES
@@ -81,13 +82,13 @@ class GooglePhotoFacade:
             response = requests.post(url, data=image_data.raw, headers=headers)
 
         upload_token = response.content.decode('utf-8')
-        print("Google Photoへのアップロードが完了しました。")
+        logger.info("Google Photoへのアップロードが完了しました。")
         body = {
             'newMediaItems': [{"simpleMediaItem": {'uploadToken': upload_token}}]
         }
         
         upload_response = self.service.mediaItems().batchCreate(body=body).execute()
-        print("Google Photoへのアップロードした動画の登録に成功しました。")
+        logger.info("Google Photoへのアップロードした動画の登録に成功しました。")
         
         if is_delete:
             os.remove(local_file_path)

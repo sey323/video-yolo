@@ -1,11 +1,9 @@
-import logging
 import os
 
 import cv2
 import yt_dlp
+from config import logger
 from VideoExtractor.util import FileUtil
-
-logger = logging.getLogger(__name__)
 
 
 class YoutubeFacade(object):
@@ -36,6 +34,7 @@ class YoutubeFacade(object):
         self.frame_count = 0
         self.size = size  # frame size
         self.inter_method = inter_method
+        self.file_path = download_url
 
     def __iter__(self):
         return self
@@ -53,6 +52,9 @@ class YoutubeFacade(object):
 
     def __del__(self):  # anyway it works without destructor
         self.org.release()
+
+    def get_title(self):
+        return os.path.splitext(os.path.basename(self.file_path))[0]
 
     def get_time(self) -> int:
         """fpsから計算し、現在の動画の秒数を計算する．
