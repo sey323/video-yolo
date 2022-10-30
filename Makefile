@@ -6,7 +6,7 @@ run:
 
 prdrun:
 	docker-compose build
-	docker-compose --env-file .env.prd up -d
+	docker-compose --env-file .env.prd up -d slackbot
 
 stop:
 	docker stop ${API_SERVER_NAME} 
