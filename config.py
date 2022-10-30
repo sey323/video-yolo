@@ -9,4 +9,4 @@ slack_bot_token = environ.get("SLACK_BOT_TOKEN", '')
 
 video_save_path = environ.get("VIDEO_SAVE_PATH", "results/video")
 audio_save_path = environ.get("AUDIO_SAVE_PATH", "results/audio")
-analytics_result_path = environ.get("ANALYTICS_RESULT_PATH", "results/analytics")
+analytics_result_base_path = environ.get("ANALYTICS_RESULT_BASE_PATH", "results/analytics")

@@ -9,7 +9,7 @@ api = Flask(__name__)
 api.config["APPLICATION_ROOT"] = "/media/v1/yt"
 
 import VideoExtractor.service as service
-from VideoExtractor.controller import yolo_v5_ai
+from VideoExtractor.processor import yolo_v5_ai
 from VideoExtractor.processor.scene_detection import (ObjectiveSceneDetector,
                                                       SceneDetector)
 from VideoExtractor.util import ImageUtil
@@ -93,7 +93,7 @@ def video_analytics():
         if "save_path" in params
         else dt.now().strftime("%Y%m%d%H%M%S")
     )
-    save_path = os.path.join(config.analytics_result_path, save_path_suffix)
+    save_path = os.path.join(config.analytics_result_base_path, save_path_suffix)
     face_threshold = int(params.get("face_threshold")) if "face_threshold" in params else 0.5
     numeric_threshold = (
         int(params.get("numeric_threshold")) if "numeric_threshold" in params else 100

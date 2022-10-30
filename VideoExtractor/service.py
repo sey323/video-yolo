@@ -162,16 +162,16 @@ def clip_image_from_detected(
             y = int(y * original_size_ratio[0])
             w = int(w * original_size_ratio[1])
             h = int(h * original_size_ratio[0])
-        cliped = base_image[y:h, x:w]
+        clipped = base_image[y:h, x:w]
 
         # 保存用のフォルダの作成
-        # target_dir/cliped/${ラベル名}のフォルダに画像を保存する
-        save_dir = os.path.join(target_dir, "cliped", label_name)
+        # target_dir/clipped/${ラベル名}のフォルダに画像を保存する
+        save_dir = os.path.join(target_dir, "clipped", label_name)
         os.makedirs(save_dir, exist_ok=True)
         # 画像を保存する
-        cliped_save_name = "{0}_{1}_{2}.png".format(target_basename, label_name, index)
-        logger.info("save path: {}".format(os.path.join(save_dir, cliped_save_name)))
-        cv2.imwrite(os.path.join(save_dir, cliped_save_name), cliped)
+        clipped_save_name = "{0}_{1}_{2}.png".format(target_basename, label_name, index)
+        logger.info("save path: {}".format(os.path.join(save_dir, clipped_save_name)))
+        cv2.imwrite(os.path.join(save_dir, clipped_save_name), clipped)
 
 
 def cut_and_detect(
