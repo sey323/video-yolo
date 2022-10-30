@@ -25,8 +25,8 @@ def main(args):
         scene_cut_process = face_detector.face_distance
         cut_threshold = args.face_threshold
     elif args.scene_detector == "numeric":
-        logger.info("Use scene detect. use method: {}".format(args.calc_method))
-        scene_detector = SceneDetector(args.calc_method)
+        logger.info("Use scene detect. use method: {}".format(args.cut_method))
+        scene_detector = SceneDetector(args.cut_method)
         scene_cut_process = scene_detector.image_distance
         cut_threshold = args.numeric_threshold
     # 処理の実行
@@ -54,7 +54,7 @@ if __name__ == "__main__":
         "--face_threshold", default=0.4, type=float, help="scene_detector=faceの時、シーンをカットする変数の閾値"
     )
     parser.add_argument(
-        "--calc_method",
+        "--cut_method",
         default="MAE",
         type=str,
         help="scene_detector=numericの時、シーンをカットするメソッド(MAE, MSE, MAE_HSV, MAE_block)",

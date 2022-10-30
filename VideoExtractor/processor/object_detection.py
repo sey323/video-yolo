@@ -50,5 +50,5 @@ class YoloV5(object):
         # 画像に保存
         cv2.imwrite(
             os.path.join(self.save_path, "img", "{}.jpg".format(file_name_prefix)),
-            results.imgs[0],
+            results.ims[0],
         )
