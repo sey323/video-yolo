@@ -56,6 +56,9 @@ class YoutubeFacade(object):
     def get_title(self):
         return os.path.splitext(os.path.basename(self.file_path))[0]
 
+    def get_fullpath(self):
+        return self.file_path
+
     def get_time(self) -> int:
         """fpsから計算し、現在の動画の秒数を計算する．
 
