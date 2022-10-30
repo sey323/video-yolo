@@ -192,6 +192,7 @@ def cut_and_detect(
         threshold (float): シーン検出に用いる閾値
         label_clip (bool): オリジナル画像からラベル画像領域を画像として保存する場合(true)
     """
+    logger.info(f"url: {url}, threshold: {threshold}")
     # ExcelDumperの初期化
     excel_dumper = ExcelDumper(save_path=save_path, img_size=(640, 360))
 
