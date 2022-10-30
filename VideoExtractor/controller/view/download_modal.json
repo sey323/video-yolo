@@ -10,7 +10,7 @@
             "type": "input",
             "block_id": "url",
             "element": {
-                "type": "plain_text_input",
+                "type": "url_text_input",
                 "action_id": "input",
                 "placeholder": {
                     "type": "plain_text",
