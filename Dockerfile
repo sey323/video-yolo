@@ -14,5 +14,3 @@ RUN pip install pip==21.2.4 \
 ENV HOME /app
 WORKDIR $HOME
 COPY ./ .
-
-CMD [ "python", "./run.py" ]    
