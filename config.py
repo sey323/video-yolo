@@ -6,3 +6,7 @@ load_dotenv()
 
 slack_api_token = environ.get("SLACK_APP_TOKEN", '')
 slack_bot_token = environ.get("SLACK_BOT_TOKEN", '')
+
+video_save_path = environ.get("VIDEO_SAVE_PATH", "results/video")
+audio_save_path = environ.get("AUDIO_SAVE_PATH", "results/audio")
+analytics_result_path = environ.get("ANALYTICS_RESULT_PATH", "results/analytics")
