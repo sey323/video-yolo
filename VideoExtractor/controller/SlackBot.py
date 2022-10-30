@@ -33,82 +33,11 @@ def download_from_youtube_shortcut(
 ):
     ack()
     
-    modal_view = {
-            "type": "modal",
-            "callback_id": "download_from_youtube",
-            "title": {"type": "plain_text", "text": "Youtubeからダウンロード"},
-            "submit": {"type": "plain_text", "text": "送信"},
-            "close": {"type": "plain_text", "text": "キャンセル"},
-            "private_metadata": "{}",
-            "blocks": [
-                {
-                    "type": "input",
-                    "block_id": "url",
-                    "element": {
-                        "type": "plain_text_input",
-                        "action_id": "input",
-                        # "multiline": True,
-                        "placeholder": {
-                            "type": "plain_text",
-                            "text": "YoutubeのURLを入力してください。",
-                        },
-                        "focus_on_load": True,
-                    },
-                    "label": {"type": "plain_text", "text": "url"},
-                },
-                {
-                    "type": "input",
-                    "block_id": "fmt",
-                    "element": {
-                        "type": "static_select",
-                        "action_id": "selected_fmt",
-                        "placeholder": {"type": "plain_text", "text": "ダウンロードするフォーマットを選択してください。"},
-                        "initial_option": {"text": {"type": "plain_text", "text": "動画"}, "value": "mp4"},
-                        "options": [
-                            {"text": {"type": "plain_text", "text": "動画"}, "value": "mp4"},
-                            {"text": {"type": "plain_text", "text": "音楽"}, "value": "mp3"}
-                        ],
-                    },
-                    "label": {"type": "plain_text", "text": "保存形式"},
-                },
-                {
-                    "type": "input",
-                    "block_id": "media_type",
-                    "element": {
-                        "type": "static_select",
-                        "action_id": "selected_media_type",
-                        "placeholder": {"type": "plain_text", "text": "アップロードするメディアのタイプを選択してください。"},
-                        "initial_option": {"text": {"type": "plain_text", "text": "Google Photo"}, "value": "photo"},
-                        "options": [
-                            {"text": {"type": "plain_text", "text": "Google Photo"}, "value": "photo"},
-                            {"text": {"type": "plain_text", "text": "Google Drive"}, "value": "drive"},
-                            {"text": {"type": "plain_text", "text": "ローカル"}, "value": "local"},
-                        ],
-                    },
-                    "label": {"type": "plain_text", "text": "保存するメディア"},
-                },
-            ],
-        }
+    modal_view = _load_view("VideoExtractor/controller/view/download_modal.json")
     # conversations_select のブロックを置いてそこでチャンネルを指定してもらいます
     if context.channel_id is None:
         modal_view["blocks"].append(
-            {
-                "type": "input",
-                "block_id": "channel_to_notify",
-                "element": {
-                    "type": "conversations_select",
-                    "action_id": "_",
-                    # response_urls を発行するためには
-                    # このオプションを設定しておく必要があります
-                    "response_url_enabled": True,
-                    # 現在のチャンネルを初期値に設定するためのオプション
-                    "default_to_current_conversation": True,
-                },
-                "label": {
-                    "type": "plain_text",
-                    "text": "起動したチャンネル",
-                },
-            }
+            _load_view("VideoExtractor/controller/view/channel_block.json")
         )
     else:
         # private_metadata に文字列として JSON を渡します
@@ -174,7 +103,10 @@ def download_process_start(ack: Ack, view: dict, say: Say):
 def handle_app_mention_events(body, logger):
     logger.info(body)
 
-
 def start():
     handler = SocketModeHandler(app, config.slack_api_token)
     handler.start()
+
+def _load_view(file_path: str) -> dict:
+    with open(file_path) as f:
+        return json.load(f)
