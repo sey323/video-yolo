@@ -1,22 +1,17 @@
 import argparse
-import logging
 import os
 
+import config
 import VideoExtractor.service as service
-from VideoExtractor.processor.object_detection import YoloV5
+from config import logger
+from VideoExtractor.processor import yolo_v5_ai
 from VideoExtractor.processor.scene_detection import (ObjectiveSceneDetector,
                                                       SceneDetector)
-
-logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 
 def main(args):
     # YOLO検出検出器
-    ANALYTICS_RESULT_PATH = os.getenv("ANALYTICS_RESULT_PATH", default="results/analytics")
-    save_path = os.path.join(ANALYTICS_RESULT_PATH, args.save_path)
-    detector = YoloV5()
-    detect_ai = detector.predict
+    save_path = os.path.join(config.analytics_result_base_path, args.save_path)
 
     # 検出関数の定義
     if args.scene_detector == "face":
@@ -24,15 +19,15 @@ def main(args):
         face_detector = ObjectiveSceneDetector(
             args.target_image_path, numeric_threshold=args.numeric_threshold
         )
-        cut_dct = face_detector.face_distance
+        scene_cut_process = face_detector.face_distance
         cut_threshold = args.face_threshold
     elif args.scene_detector == "numeric":
-        logger.info("Use scene detect. use method: {}".format(args.calc_method))
-        scene_detector = SceneDetector(args.calc_method)
-        cut_dct = scene_detector.image_distance
+        logger.info("Use scene detect. use method: {}".format(args.cut_method))
+        scene_detector = SceneDetector(args.cut_method)
+        scene_cut_process = scene_detector.image_distance
         cut_threshold = args.numeric_threshold
     # 処理の実行
-    service.cut_and_detect(args.url, cut_dct, detect_ai, save_path, cut_threshold)
+    service.cut_and_detect(args.url, scene_cut_process, yolo_v5_ai.predict, save_path, cut_threshold)
 
 
 if __name__ == "__main__":
@@ -56,7 +51,7 @@ if __name__ == "__main__":
         "--face_threshold", default=0.4, type=float, help="scene_detector=faceの時、シーンをカットする変数の閾値"
     )
     parser.add_argument(
-        "--calc_method",
+        "--cut_method",
         default="MAE",
         type=str,
         help="scene_detector=numericの時、シーンをカットするメソッド(MAE, MSE, MAE_HSV, MAE_block)",

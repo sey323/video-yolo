@@ -15,4 +15,4 @@ ENV HOME /app
 WORKDIR $HOME
 COPY ./ .
 
-CMD [ "python", "./api.py" ]    
+CMD [ "python", "./run.py" ]    
