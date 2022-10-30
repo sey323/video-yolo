@@ -92,8 +92,9 @@ def download_process_start(ack: Ack, view: dict, say: Say):
             .get("_")
             .get("selected_conversation")
         )
-    say(channel=channel_to_notify,
+    thread = say(channel=channel_to_notify,
         text=f"ダウンロードを開始します。")
+    print(thread['ts'])
 
     url: str = view['state']['values']['url']['input']['value']
     fmt: str = view['state']['values']['fmt']['selected_fmt']['selected_option']['value']
@@ -119,12 +120,14 @@ def download_process_start(ack: Ack, view: dict, say: Say):
     except Exception as e:
         say(
             channel=channel_to_notify,
+            thread_ts=thread['ts'],
             text=f"""ダウンロード処理に失敗しました。以下エラー内容。
 ```{e}```"""
         )
     # そのチャンネルに対して chat.postMessage でメッセージを送信します
     say(
         channel=channel_to_notify,
+        thread_ts=thread['ts'],
         text=f"""ダウンロードが完了しました。
         ファイル名: {response.get('file_name')}
         URL: {response.get('url')}"""
@@ -150,7 +153,7 @@ def analytics_video_start(ack: Ack, view: dict, say: Say):
     scene_detector: str = view['state']['values']['scene_detector']['selected_scene_detector']['selected_option']['value']
     numeric_threshold: str = view['state']['values']['numeric_threshold']['input_numeric_threshold']['value']
 
-    say(channel=channel_to_notify,
+    thread = say(channel=channel_to_notify,
         text=f"""動画の解析を開始します。
         URL :{url}
         解析タイプ: {'顔画像の類似度' if scene_detector == "face" else '直前のフレームとの差分'}
@@ -170,6 +173,10 @@ def analytics_video_start(ack: Ack, view: dict, say: Say):
         elif scene_detector == "face":
             face_image_url: str = view['state']['values']['face_image_url']['face_image_url_text_input']['value']
             
+            thread = say(
+                channel=channel_to_notify,
+                thread_ts=thread['ts'],
+                text=f"対象の顔画像: {face_image_url}")
             response = service.cut_and_detect(
                 url,
                 ObjectiveSceneDetector(
@@ -182,6 +189,7 @@ def analytics_video_start(ack: Ack, view: dict, say: Say):
     except Exception as e:
         say(
             channel=channel_to_notify,
+            thread_ts=thread['ts'],
             text=f"""解析処理に失敗しました。以下エラー内容。
 ```{e}```"""
         )
@@ -189,6 +197,7 @@ def analytics_video_start(ack: Ack, view: dict, say: Say):
     # そのチャンネルに対して chat.postMessage でメッセージを送信します
     say(
         channel=channel_to_notify,
+        thread_ts=thread['ts'],
         text=f"""解析処理が完了しました。
         ファイル名: {response.get('title')}
         URL: {response.get('url')}"""
