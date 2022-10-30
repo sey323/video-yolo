@@ -1,6 +1,7 @@
 import json
 
 import config
+from config import logger
 from slack_bolt import Ack, App, BoltContext, Say
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_sdk import WebClient
@@ -83,7 +84,7 @@ def download_from_youtube_shortcut(
                             {"text": {"type": "plain_text", "text": "ローカル"}, "value": "local"},
                         ],
                     },
-                    "label": {"type": "plain_text", "text": "保存形式"},
+                    "label": {"type": "plain_text", "text": "保存するメディア"},
                 },
             ],
         }

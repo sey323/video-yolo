@@ -1,3 +1,4 @@
+from config import logger
 from VideoExtractor.controller.Api import api
 
 if __name__ == "__main__":

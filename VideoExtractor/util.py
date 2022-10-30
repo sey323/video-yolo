@@ -1,5 +1,4 @@
 import base64
-import logging
 import os
 from datetime import datetime as dt
 from glob import glob
@@ -7,8 +6,7 @@ from glob import glob
 import cv2
 import numpy as np
 import openpyxl
-
-logger = logging.getLogger(__name__)
+from config import logger
 
 
 class FileUtil:

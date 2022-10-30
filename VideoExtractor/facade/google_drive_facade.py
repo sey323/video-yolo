@@ -1,5 +1,6 @@
 import os
 
+from config import logger
 from pydrive2.auth import GoogleAuth
 from pydrive2.drive import GoogleDrive
 
@@ -16,7 +17,7 @@ class GoogleDriveFacade:
         ret = self.check_files(folder_name)
         if ret:
             folder = ret
-            print(folder['title']+" exists")
+            logger.info(folder['title']+" exists")
         else:   
             folder = self.drive.CreateFile(
                 {

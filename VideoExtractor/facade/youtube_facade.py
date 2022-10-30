@@ -1,11 +1,9 @@
-import logging
 import os
 
 import cv2
 import yt_dlp
+from config import logger
 from VideoExtractor.util import FileUtil
-
-logger = logging.getLogger(__name__)
 
 
 class YoutubeFacade(object):

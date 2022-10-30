@@ -1,16 +1,15 @@
-import logging
 import os
 from typing import Callable
 
 import cv2
 import numpy as np
+from config import logger
 
 from VideoExtractor.facade.google_drive_facade import GoogleDriveFacade
 from VideoExtractor.facade.google_photo_facade import GooglePhotoFacade
 from VideoExtractor.facade.youtube_facade import YoutubeFacade
 from VideoExtractor.util import ExcelDumper
 
-logger = logging.getLogger(__name__)
 google_drive = GoogleDriveFacade()
 google_photo = GooglePhotoFacade(
         credential_path = "keys/client_secrets.json",
@@ -38,7 +37,7 @@ def save_media(save_media_type: str, save_file_name: str, local_file_path: str, 
         url = google_drive.upload(
             save_file_name=save_file_name, 
             local_file_path=local_file_path,
-            save_folder_name = os.path.basename(local_file_path),
+            save_folder_name = "Youtube",
             is_delete=True
         )
         return {

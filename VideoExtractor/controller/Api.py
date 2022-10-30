@@ -3,17 +3,15 @@ import os
 from datetime import datetime as dt
 
 import config
-from flask import Flask, jsonify, make_response, request
-
-api = Flask(__name__)
-api.config["APPLICATION_ROOT"] = "/media/v1/yt"
-
 import VideoExtractor.service as service
+from flask import Flask, jsonify, make_response, request
 from VideoExtractor.processor import yolo_v5_ai
 from VideoExtractor.processor.scene_detection import (ObjectiveSceneDetector,
                                                       SceneDetector)
 from VideoExtractor.util import ImageUtil
 
+api = Flask(__name__)
+api.config["APPLICATION_ROOT"] = "/media/v1/yt"
 
 # ダウンロード用API
 @api.route("/download/video", methods=["GET"])
@@ -116,9 +114,9 @@ def video_analytics():
     else:
         return make_response("Please set target image")
 
-    service.cut_and_detect(url, scene_cut_process, yolo_v5_ai.predict, save_path=save_path, threshold=threshold)
+    response = service.cut_and_detect(url, scene_cut_process, yolo_v5_ai.predict, save_path=save_path, threshold=threshold)
 
-    return make_response(save_path)
+    return make_response(response)
 
 
 # エラーハンドリング

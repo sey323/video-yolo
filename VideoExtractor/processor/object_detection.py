@@ -1,11 +1,9 @@
-import logging
 import os
 
 import cv2
 import numpy as np
 import torch
-
-logger = logging.getLogger(__name__)
+from config import logger
 
 
 class YoloV5(object):

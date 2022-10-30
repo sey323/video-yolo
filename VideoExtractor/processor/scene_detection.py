@@ -1,10 +1,7 @@
-import logging
-
 import cv2
 import face_recognition
 import numpy as np
-
-logger = logging.getLogger(__name__)
+from config import logger
 
 
 class SceneDetector:

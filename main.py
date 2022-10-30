@@ -1,15 +1,12 @@
 import argparse
-import logging
 import os
 
 import config
 import VideoExtractor.service as service
+from config import logger
 from VideoExtractor.processor import yolo_v5_ai
 from VideoExtractor.processor.scene_detection import (ObjectiveSceneDetector,
                                                       SceneDetector)
-
-logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 
 def main(args):
