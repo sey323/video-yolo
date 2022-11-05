@@ -4,7 +4,6 @@ from datetime import datetime as dt
 
 import config
 from config import logger
-from cv2 import threshold
 from slack_bolt import Ack, App, BoltContext, Say
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_sdk import WebClient
@@ -15,19 +14,44 @@ from VideoExtractor.processor.scene_detection import (ObjectiveSceneDetector,
 
 app = App(token=config.slack_bot_token)
 
-# イベント API
+# メッセージ API
 @app.message(r'(https)(:\/\/[\w\/:%#\$&\?\(\)~\.=\+\-]+)')
 def download_from_youtube(message, say):
-    say(f"動画のダウンロードを開始します。デフォルトのGoogleDriveに保存します。")
+    thread = say(
+        thread_ts=message['ts'],
+        text=f"動画のダウンロードを開始します。デフォルトのGoogleDriveに保存します。"
+        )
     response: dict = service.download_video(
         message['text'][1:-1],
         save_path=config.video_save_path,
         save_media_type="drive"
     )
-    say(f"""ダウンロードが完了しました。
+    say(
+        thread_ts=thread['ts'],
+        text=f"""ダウンロードが完了しました。
         ファイル名: {response.get('file_name')}
         URL: {response.get('url')}
         """)
+
+# イベント API
+@app.event({
+    "type": "message",
+    "subtype": "file_share"
+})
+def super_resolution_image(event, say, client):
+    thread = say(
+        thread_ts=event['event_ts'],
+        text=f"画像を高画質化します。"
+    )
+    response = service.super_resolution(
+        event['files'][0]['url_private_download'],
+        auth = config.slack_bot_token
+    )
+    say(
+        thread_ts=thread['ts'],
+        text=f"""変換が完了しました。
+URL: {response.get('url')}""",
+        )
 
 # ショートカットとモーダル
 @app.shortcut("download_from_youtube")
