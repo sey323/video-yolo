@@ -24,7 +24,6 @@ commonmark==0.9.1
 cryptography==38.0.1
 cycler==0.10.0
 Cython==0.29.21
-datasets==1.14.0
 decorator==5.1.0
 Deprecated==1.2.13
 dill==0.3.4
@@ -32,7 +31,6 @@ distro==1.6.0
 dlib==19.22.1
 dm-tree==0.1.7
 docker==5.0.2
-docker-compose==1.29.2
 dockerpty==0.4.1
 docopt==0.6.2
 et-xmlfile==1.0.1
@@ -59,7 +57,6 @@ greenlet==1.0a1
 grpcio==1.32.0
 h5py==2.10.0
 httplib2==0.20.4
-huggingface-hub==0.10.1
 icecream==2.1.1
 idna==2.10
 importlib-metadata==4.8.1
@@ -165,7 +162,6 @@ torch==1.9.1
 torchvision==0.10.1
 tqdm==4.64.1
 traitlets==5.5.0
-transformers==4.23.1
 typed-ast==1.4.2
 typing_extensions==4.4.0
 unidic-lite==1.0.8
