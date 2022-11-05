@@ -4,6 +4,10 @@ run:
 	docker-compose build
 	docker-compose --env-file .env.dev up -d
 
+prdrun:
+	docker-compose build
+	docker-compose --env-file .env.prd up -d slackbot
+
 stop:
 	docker stop ${API_SERVER_NAME} 
 	docker rm -f ${API_SERVER_NAME}

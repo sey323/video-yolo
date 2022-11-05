@@ -14,7 +14,7 @@ class GoogleDriveFacade:
         self.drive = GoogleDrive(gauth)
 
     def create_folder(self, folder_name):
-        ret = self.check_files(folder_name)
+        ret = self.check_folders(folder_name)
         if ret:
             folder = ret
             logger.info(folder['title']+" exists")
@@ -29,7 +29,7 @@ class GoogleDriveFacade:
 
         return folder
 
-    def check_files(self, folder_name,):
+    def check_folders(self, folder_name,):
         query = f'title = "{os.path.basename(folder_name)}"'
 
         list = self.drive.ListFile({'q': query}).GetList()

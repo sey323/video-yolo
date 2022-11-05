@@ -120,4 +120,4 @@ results/
 .DS_Store
 
 *.pt
-./keys/*
+keys/*
