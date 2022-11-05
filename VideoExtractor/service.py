@@ -8,8 +8,10 @@ from config import logger
 from VideoExtractor.facade.google_drive_facade import GoogleDriveFacade
 from VideoExtractor.facade.google_photo_facade import GooglePhotoFacade
 from VideoExtractor.facade.youtube_facade import YoutubeFacade
+from VideoExtractor.processor.super_resolution import RealEsrgan
 from VideoExtractor.util import ExcelDumper
 
+real_esrgan = RealEsrgan()
 google_drive = GoogleDriveFacade()
 google_photo = GooglePhotoFacade(
         credential_path = "keys/client_secrets.json",
@@ -60,6 +62,21 @@ def save_media(save_media_type: str, save_file_name: str, local_file_path: str, 
         return {
             "status": "error"
         }
+
+def super_resolution(
+    url: str,
+    auth: str ="",
+    save_media_type: str="photo"
+)-> str:
+    result: dict = real_esrgan.predict(
+        url,
+        download_auth = auth,
+    )
+    return save_media(
+        save_media_type=save_media_type,
+        save_file_name=result["file_name"],
+        local_file_path=result["file_name"],
+    )
 
 def download_video(
     url: str,
