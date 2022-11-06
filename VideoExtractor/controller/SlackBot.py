@@ -2,17 +2,16 @@ import json
 import os
 from datetime import datetime as dt
 
-import config
-from config import logger
 from slack_bolt import Ack, App, BoltContext, Say
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from slack_sdk import WebClient
+
+import config
+from config import logger
 from VideoExtractor import service
 from VideoExtractor.processor import yolo_v5_ai
-from VideoExtractor.processor.scene_detection import (
-    ObjectiveSceneDetector,
-    SceneDetector,
-)
+from VideoExtractor.processor.scene_detection import (ObjectiveSceneDetector,
+                                                      SceneDetector)
 
 app = App(token=config.slack_bot_token)
 
@@ -38,15 +37,22 @@ def download_from_youtube(message, say):
 @app.event({"type": "message", "subtype": "file_share"})
 def super_resolution_image(event, say, client):
     thread = say(thread_ts=event["event_ts"], text=f"画像を高画質化します。")
-    response = service.super_resolution(
-        event["files"][0]["url_private_download"], auth=config.slack_bot_token
-    )
-    say(
-        thread_ts=thread["ts"],
-        text=f"""変換が完了しました。
-URL: {response.get('url')}""",
-    )
-
+    
+    try:
+        response = service.super_resolution(
+            event["files"][0]["url_private_download"], auth=config.slack_bot_token
+        )
+        say(
+            thread_ts=thread["ts"],
+            text=f"""変換が完了しました。
+    URL: {response.get('url')}""",
+        )
+    except Exception as e:
+        say(
+            thread_ts=thread["ts"],
+            text=f"""超解像度変換処理に失敗しました。以下エラー内容。
+```{e}```""",
+        )
 
 # ショートカットとモーダル
 @app.shortcut("download_from_youtube")
@@ -100,7 +106,6 @@ def download_process_start(ack: Ack, view: dict, say: Say):
             .get("selected_conversation")
         )
     thread = say(channel=channel_to_notify, text=f"ダウンロードを開始します。")
-    print(thread["ts"])
 
     url: str = view["state"]["values"]["url"]["input"]["value"]
     fmt: str = view["state"]["values"]["fmt"]["selected_fmt"]["selected_option"][
@@ -123,6 +128,15 @@ def download_process_start(ack: Ack, view: dict, say: Say):
             )
         else:
             response = None
+        
+        # そのチャンネルに対して chat.postMessage でメッセージを送信します
+        say(
+            channel=channel_to_notify,
+            thread_ts=thread["ts"],
+            text=f"""ダウンロードが完了しました。
+            ファイル名: {response.get('file_name')}
+            URL: {response.get('url')}""",
+        )
     except Exception as e:
         say(
             channel=channel_to_notify,
@@ -130,14 +144,7 @@ def download_process_start(ack: Ack, view: dict, say: Say):
             text=f"""ダウンロード処理に失敗しました。以下エラー内容。
 ```{e}```""",
         )
-    # そのチャンネルに対して chat.postMessage でメッセージを送信します
-    say(
-        channel=channel_to_notify,
-        thread_ts=thread["ts"],
-        text=f"""ダウンロードが完了しました。
-        ファイル名: {response.get('file_name')}
-        URL: {response.get('url')}""",
-    )
+
 
 
 @app.view("analytics_video")

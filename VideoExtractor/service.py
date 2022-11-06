@@ -58,14 +58,16 @@ def save_media(
 
 
 def super_resolution(url: str, auth: str = "", save_media_type: str = "photo") -> str:
-    result: dict = real_esrgan.predict(
+    save_file_name = real_esrgan.predict(
         url,
         download_auth=auth,
     )
+    save_file_path = os.path.join(config.super_resolution_result_base_path, save_file_name)
+    
     return save_media(
         save_media_type=save_media_type,
-        save_file_name=result["file_name"],
-        local_file_path=result["file_name"],
+        save_file_name=save_file_name,
+        local_file_path=save_file_path,
     )
 
 

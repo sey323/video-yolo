@@ -43,7 +43,7 @@ class RealEsrgan:
         save_path = os.path.join(self.save_root_path, save_file_name)
         sr_image.save(save_path)
 
-        return {"file_name": save_path}
+        return save_file_name
 
 
 if __name__ == "__main__":
