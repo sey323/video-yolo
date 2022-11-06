@@ -28,7 +28,9 @@ class YoutubeFacade(object):
         else:  # MP4がないときはYoutubeからダウンロード
             logger.info("Download video from Youtube.")
             self.download_video(video_file, save_root_path)
-            download_url = FileUtil.get_latest_modified_file_path(os.path.join(save_root_path))
+            download_url = FileUtil.get_latest_modified_file_path(
+                os.path.join(save_root_path)
+            )
             self.org = cv2.VideoCapture(download_url)
 
         self.frame_count = 0
@@ -97,13 +99,13 @@ class YoutubeFacade(object):
             save_path (str): ダウンロードした動画を保存するパス
         """
         ydl_opts = {
-            'format': 'best',
+            "format": "best",
             "outtmpl": f"{save_path}/%(title)s.%(ext)s",
             # "cookies-from-browser": "Vivaldi",
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             result = ydl.download(
-                url, 
+                url,
             )
             save_full_path = FileUtil.get_latest_modified_file_path(save_path)
 
@@ -119,19 +121,21 @@ class YoutubeFacade(object):
         """
         ydl_opts = {
             "outtmpl": f"{save_path}/%(title)s.%(ext)s",
-            'format': 'bestaudio/best',
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
-            }],
+            "format": "bestaudio/best",
+            "postprocessors": [
+                {
+                    "key": "FFmpegExtractAudio",
+                    "preferredcodec": "mp3",
+                    "preferredquality": "192",
+                }
+            ],
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             result = ydl.download(
-                url, 
+                url,
             )
-            save_full_path = FileUtil.get_latest_modified_file_path(save_path, fmt="mp3")
+            save_full_path = FileUtil.get_latest_modified_file_path(
+                save_path, fmt="mp3"
+            )
 
         return os.path.basename(save_full_path)
-
-

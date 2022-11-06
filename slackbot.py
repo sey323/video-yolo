@@ -1,4 +1,3 @@
-
 import VideoExtractor.controller.SlackBot as SlackBot
 from config import logger
 

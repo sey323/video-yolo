@@ -6,8 +6,10 @@ import config
 import VideoExtractor.service as service
 from flask import Flask, jsonify, make_response, request
 from VideoExtractor.processor import yolo_v5_ai
-from VideoExtractor.processor.scene_detection import (ObjectiveSceneDetector,
-                                                      SceneDetector)
+from VideoExtractor.processor.scene_detection import (
+    ObjectiveSceneDetector,
+    SceneDetector,
+)
 from VideoExtractor.util import ImageUtil
 
 api = Flask(__name__)
@@ -18,28 +20,24 @@ api.config["APPLICATION_ROOT"] = "/media/v1/yt"
 def get_download_video():
     # リクエストパラメータを取得
     params = request.args
-    
+
     save_media_type = (
-        params.get("save_media_type")
-        if params.get("save_path")
-        else "photo"
+        params.get("save_media_type") if params.get("save_path") else "photo"
     )
-    
+
     # 「save_media_type=local」の場合、ローカルに保存するパスを指定
     save_path = (
         os.path.join(config.video_save_path, params.get("save_path"))
         if params.get("save_path")
         else config.video_save_path
     )
-    
+
     url = params.get("url")
     if not url:
         return make_response("Please set video path")
 
     response: dict = service.download_video(
-        url,
-        save_path=save_path,
-        save_media_type=save_media_type
+        url, save_path=save_path, save_media_type=save_media_type
     )
 
     return make_response(response)
@@ -52,11 +50,9 @@ def get_download_audio():
     params = request.args
 
     save_media_type = (
-        params.get("save_media_type")
-        if params.get("save_path")
-        else "local"
+        params.get("save_media_type") if params.get("save_path") else "local"
     )
-    
+
     # 「save_media_type=local」の場合、ローカルに保存するパスを指定
     save_path = (
         os.path.join(config.audio_save_path, params.get("save_path"))
@@ -68,9 +64,7 @@ def get_download_audio():
         return make_response("Please set video path")
 
     response: dict = service.download_audio(
-        url,
-        save_path=save_path,
-        save_media_type=save_media_type
+        url, save_path=save_path, save_media_type=save_media_type
     )
 
     return make_response(response)
@@ -92,11 +86,15 @@ def video_analytics():
         else dt.now().strftime("%Y%m%d%H%M%S")
     )
     save_path = os.path.join(config.analytics_result_base_path, save_path_suffix)
-    face_threshold = int(params.get("face_threshold")) if "face_threshold" in params else 0.5
+    face_threshold = (
+        int(params.get("face_threshold")) if "face_threshold" in params else 0.5
+    )
     numeric_threshold = (
         int(params.get("numeric_threshold")) if "numeric_threshold" in params else 100
     )
-    scene_detector = params.get("scene_detector") if "scene_detector" in params else "numeric"
+    scene_detector = (
+        params.get("scene_detector") if "scene_detector" in params else "numeric"
+    )
 
     if scene_detector == "numeric":
         # 識別方式で数字を利用する
@@ -114,7 +112,13 @@ def video_analytics():
     else:
         return make_response("Please set target image")
 
-    response = service.cut_and_detect(url, scene_cut_process, yolo_v5_ai.predict, save_path=save_path, threshold=threshold)
+    response = service.cut_and_detect(
+        url,
+        scene_cut_process,
+        yolo_v5_ai.predict,
+        save_path=save_path,
+        threshold=threshold,
+    )
 
     return make_response(response)
 
@@ -123,4 +127,3 @@ def video_analytics():
 @api.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({"error": "Not found"}), 404)
-

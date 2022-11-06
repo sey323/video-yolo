@@ -3,23 +3,26 @@ from typing import Callable
 
 import cv2
 import numpy as np
-from config import logger
 
+from config import logger
 from VideoExtractor.facade.google_drive_facade import GoogleDriveFacade
 from VideoExtractor.facade.google_photo_facade import GooglePhotoFacade
 from VideoExtractor.facade.youtube_facade import YoutubeFacade
 from VideoExtractor.processor.super_resolution import RealEsrgan
 from VideoExtractor.util import ExcelDumper
 
-real_esrgan = RealEsrgan()
+real_esrgan = RealEsrgan(save_root_path=config.super_resolution_result_base_path)
 google_drive = GoogleDriveFacade()
 google_photo = GooglePhotoFacade(
-        credential_path = "keys/client_secrets.json",
-        token_path='keys/token.pkl'
-    )
+    credential_path="keys/client_secrets.json", token_path="keys/token.pkl"
+)
 
 
-def save_media(save_media_type: str, save_file_name: str, local_file_path: str, ):
+def save_media(
+    save_media_type: str,
+    save_file_name: str,
+    local_file_path: str,
+):
     """メディアファイルを任意のストレージに保存する。
 
     Args:
@@ -31,46 +34,32 @@ def save_media(save_media_type: str, save_file_name: str, local_file_path: str, 
         _type_: _description_
     """
     if save_media_type == "local":
-        return {
-            "file_name": save_file_name,
-            "url": local_file_path
-        }
+        return {"file_name": save_file_name, "url": local_file_path}
     elif save_media_type == "drive":
         url = google_drive.upload(
-            save_file_name=save_file_name, 
+            save_file_name=save_file_name,
             local_file_path=local_file_path,
-            save_folder_name = "Youtube",
-            is_delete=True
+            save_folder_name="Youtube",
+            is_delete=True,
         )
-        return {
-            "file_name": save_file_name,
-            "url": url
-        }
+        return {"file_name": save_file_name, "url": url}
     elif save_media_type == "photo":
         response = google_photo.upload(
-            save_file_name=save_file_name, 
+            save_file_name=save_file_name,
             local_file_path=local_file_path,
-            is_delete=True
+            is_delete=True,
         )
-        return {
-            "file_name": save_file_name,
-            "url": response.get('productUrl')
-        }
+        return {"file_name": save_file_name, "url": response.get("productUrl")}
     else:
         # ファイルを削除してエラーを通知
         os.remove(local_file_path)
-        return {
-            "status": "error"
-        }
+        return {"status": "error"}
 
-def super_resolution(
-    url: str,
-    auth: str ="",
-    save_media_type: str="photo"
-)-> str:
+
+def super_resolution(url: str, auth: str = "", save_media_type: str = "photo") -> str:
     result: dict = real_esrgan.predict(
         url,
-        download_auth = auth,
+        download_auth=auth,
     )
     return save_media(
         save_media_type=save_media_type,
@@ -78,11 +67,8 @@ def super_resolution(
         local_file_path=result["file_name"],
     )
 
-def download_video(
-    url: str,
-    save_path: str,
-    save_media_type: str = "local"
-) -> str:
+
+def download_video(url: str, save_path: str, save_media_type: str = "local") -> str:
     """YoutubeのURLから動画をダウンロードし、タイトルを返す。
 
     Args:
@@ -98,19 +84,15 @@ def download_video(
 
     video_file_name = YoutubeFacade.download_video(url, save_path)
     video_file_path = os.path.join(save_path, video_file_name)
-    # 
+    #
     return save_media(
         save_media_type=save_media_type,
-        save_file_name=video_file_name, 
+        save_file_name=video_file_name,
         local_file_path=video_file_path,
     )
 
 
-def download_audio(
-    url: str,
-    save_path: str,
-    save_media_type: str = "local"
-) -> str:
+def download_audio(url: str, save_path: str, save_media_type: str = "local") -> str:
     """YoutubeのURLから動画を音楽に変換しダウンロードし、タイトルを返す。
 
     Args:
@@ -126,11 +108,11 @@ def download_audio(
 
     audio_file_name = YoutubeFacade.download_audio(url, save_path)
     audio_file_path = os.path.join(save_path, audio_file_name)
-    # 
+    #
 
     return save_media(
         save_media_type=save_media_type,
-        save_file_name=audio_file_name, 
+        save_file_name=audio_file_name,
         local_file_path=audio_file_path,
     )
 
@@ -263,21 +245,18 @@ def cut_and_detect(
 
     # HTMLに保存
     excel_dumper.save_html()
-    
+
     # スプレッドシートのアップロード
     url = google_drive.upload(
-        save_file_name = "result.xlsx", 
-        local_file_path = excel_dumper.get_save_file_name(),
-        save_folder_name = youtube_facade.get_title(),
+        save_file_name="result.xlsx",
+        local_file_path=excel_dumper.get_save_file_name(),
+        save_folder_name=youtube_facade.get_title(),
     )
     # 動画のアップロード
     url = google_drive.upload(
-        save_file_name = f"{youtube_facade.get_title()}.mp4", 
-        local_file_path = youtube_facade.get_fullpath(),
-        save_folder_name = youtube_facade.get_title(),
+        save_file_name=f"{youtube_facade.get_title()}.mp4",
+        local_file_path=youtube_facade.get_fullpath(),
+        save_folder_name=youtube_facade.get_title(),
     )
-    
-    return {
-            "title": youtube_facade.get_title(),
-            "url": url
-    }
+
+    return {"title": youtube_facade.get_title(), "url": url}
