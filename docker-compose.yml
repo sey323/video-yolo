@@ -7,6 +7,7 @@ services:
     command: [ "python", "./slackbot.py" ]
     volumes:
       - ${ANALYTICS_RESULT_BASE_PATH}:/home/video-yolo/results/analytics
+      - ${SUPER_RESOLUTION_RESULT_BASE_PATH}:/home/video-yolo/results/super_resolution
       - ${AUDIO_SAVE_PATH}:/home/video-yolo/results/audio
       - ${VIDEO_SAVE_PATH}:/home/video-yolo/results/video
 
