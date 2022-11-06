@@ -4,6 +4,7 @@ from typing import Callable
 import cv2
 import numpy as np
 
+import config
 from config import logger
 from VideoExtractor.facade.google_drive_facade import GoogleDriveFacade
 from VideoExtractor.facade.google_photo_facade import GooglePhotoFacade
