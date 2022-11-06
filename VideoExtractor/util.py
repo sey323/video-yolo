@@ -11,7 +11,7 @@ from config import logger
 
 class FileUtil:
     @staticmethod
-    def get_latest_modified_file_path(dirname: str, fmt:str = 'mp4') -> str:
+    def get_latest_modified_file_path(dirname: str, fmt: str = "mp4") -> str:
         """ディレクトリ内で最後に更新されたファイルを得る．
 
         Args:
@@ -22,12 +22,13 @@ class FileUtil:
         """
         target = os.path.join(dirname, "*")
         files = [
-            (f, os.path.getmtime(f)) 
-            for f in glob(target) 
+            (f, os.path.getmtime(f))
+            for f in glob(target)
             if os.path.splitext(f)[1] == f".{fmt}"
         ]
         latest_modified_file_path = sorted(files, key=lambda files: files[1])[-1]
         return latest_modified_file_path[0]
+
 
 class ImageUtil(object):
     @staticmethod
