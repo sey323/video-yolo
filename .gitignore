@@ -115,10 +115,9 @@ results/
 *.webm
 !requirements.txt
 
-# vscode
+# Projectファイル
 .vscode
 .DS_Store
-
 *.pt
 keys/*
 weights/
